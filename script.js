@@ -1,4 +1,5 @@
 const openCityApiUrl = 'https://wft-geo-db.p.rapidapi.com/v1/geo/cities';
+const weatherApiUrl = 'https://api.openweathermap.org/data/2.5/onecall';
 
 const cities = {};
 
@@ -7,7 +8,27 @@ let existingCities;
 // Prepare the website from recent history
 if (localStorage.getItem('recentCities')) {
     existingCities = JSON.parse(localStorage.getItem('recentCities'));
-    console.log(existingCities);
+
+    const resultsSection = document.getElementById('results');
+    for (i = 0; i < existingCities.length; i++) {
+        cities[existingCities[i]['id']] = existingCities[i];
+        const row = document.createElement('div');
+        row.className = 'd-flex flex-row';
+
+        const item = document.createElement('div');
+        item.className = 'flex-fill';
+
+        const resultButton = document.createElement('button');
+        resultButton.className = 'btn btn-secondary full-width mt-2';
+        resultButton.textContent = existingCities[i]['city'] + ', ' + existingCities[i]['region'];
+        resultButton.id = existingCities[i]['id'];
+        resultButton.addEventListener('click', loadDetail);
+
+        item.append(resultButton);
+        row.append(item);
+        resultsSection.append(row);
+    }
+
 } else {
     existingCities = new Array();
 }
@@ -15,8 +36,11 @@ if (localStorage.getItem('recentCities')) {
 // Add a new city to the list of recent cities
 function addItem(id, city, region, latitude, longitude) {
     console.log('add cities');
-    existingCities.push({id: id, city: city, region: region, latitude: latitude, longitude: longitude});
-    localStorage.setItem('recentCities', JSON.stringify(existingCities));
+
+    if (existingCities.filter(items => items['id'] === id).length === 0) {
+        existingCities.push({id: id, city: city, region: region, latitude: latitude, longitude: longitude});
+        localStorage.setItem('recentCities', JSON.stringify(existingCities));
+    }
 }
 
 // Load a specific city details and save it in recent cities
@@ -25,6 +49,37 @@ function loadDetail($event) {
     const city = cities[cityId];
 
     addItem(cityId, city['city'], city['region'], city['latitude'], city['longitude']);
+
+    fetch(weatherApiUrl + '?' + new URLSearchParams(
+        {
+          lat: city['latitude'],
+          lon: city['longitude'],
+          appid: 'bb27746b5bbd19d86e3bfe7bbe6458db',
+          units: 'imperial'
+        })
+      ).then(
+        (results) => {
+          return results.json();
+        }
+      ).then((results) => {
+        console.log(results);
+    
+        const todaysDate = new Date();
+        const cityName = document.getElementById('cityName');
+        cityName.textContent = city['city'] + '(' + (todaysDate.getMonth() + 1) + '/' + todaysDate.getDate() + '/' + todaysDate.getFullYear() + ')';
+    
+        const currentTemp = document.getElementById('currentTemp');
+        currentTemp.textContent = results['current']['temp'] + ' degrees';
+    
+        const currentWind = document.getElementById('currentWind');
+        currentWind.textContent = results['current']['wind_speed'] + ' mph';
+    
+        const currentHumidity = document.getElementById('currentHumidity');
+        currentHumidity.textContent = results['current']['humidity'] + '%';
+    
+        const currentUvIndex = document.getElementById('currentUvIndex');
+        currentUvIndex.textContent = results['current']['uvi'];
+      });
 }
 
 // Search for cities via API
