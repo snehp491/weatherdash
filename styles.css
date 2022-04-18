@@ -26,3 +26,7 @@ label {
     border-style: solid;
     border-radius: 5px;
 }
+
+.weather-card {
+    background-color: rgb(45, 62, 80);
+}
