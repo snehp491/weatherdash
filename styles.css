@@ -15,3 +15,14 @@ body {
 .full-width {
     width: 100%;
 }
+
+label {
+    color: lightgray;
+}
+
+#current-conditions-section {
+    border-width: 3px;
+    border-color: lightgray;
+    border-style: solid;
+    border-radius: 5px;
+}
