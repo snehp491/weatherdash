@@ -1,0 +1,17 @@
+body {
+    padding: 10px;
+}
+
+.header-background {
+    background-image: linear-gradient(to right, rgb(53, 89, 188), rgb(32, 9, 75));
+}
+
+.header-text {
+    color: white;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.full-width {
+    width: 100%;
+}
