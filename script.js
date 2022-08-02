@@ -210,7 +210,7 @@ function searchCities() {
         method: 'GET',
         headers: {
             'X-RapidAPI-Host': 'wft-geo-db.p.rapidapi.com',
-            'X-RapidAPI-Key': '9c7eb9a856mshbbaac42b7e0462cp141808jsna624ee714591'
+            'X-RapidAPI-Key': '417b42f7dbmsh33c4d4e4b7a2c27p1e2508jsn2a9eb161c839'
         }
     }).then(
         (results) => {
